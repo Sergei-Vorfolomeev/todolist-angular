@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from 'environments/environment'
 import { BehaviorSubject, map } from 'rxjs'
-import { DomainTasks, GetTasksResponse, Task } from 'app/features/todos/models/tasks.models'
+import {
+  DomainTasks,
+  GetTasksResponse,
+  Task,
+  UpdateTaskModel,
+} from 'app/features/todos/models/tasks.models'
 import { CommonResponse } from 'app/core/models/core.models'
 
 @Injectable({
@@ -48,12 +53,43 @@ export class TasksService {
         `${environment.baseUrl}/todo-lists/${data.todolistId}/tasks/${data.taskId}`
       )
       .pipe(
-        map(res => {
+        map(() => {
           const state = this.tasks$.getValue()
           state[data.todolistId] = state[data.todolistId].filter(el => el.id !== data.taskId)
           return state
         })
       )
       .subscribe(state => this.tasks$.next(state))
+  }
+  changeTaskStatus(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
+    this.http
+      .put<CommonResponse<Task>>(
+        `${environment.baseUrl}/todo-lists/${data.todolistId}/tasks/${data.taskId}`,
+        data.model
+      )
+      .pipe(
+        map(() => {
+          const state = this.tasks$.getValue()
+          state[data.todolistId] = state[data.todolistId].map(el =>
+            el.id === data.taskId ? { ...el, ...data.model } : el
+          )
+          return state
+        })
+      )
+      .subscribe(tasks => this.tasks$.next(tasks))
+  }
+  changeTaskTitle(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
+    this.http
+      .put(`${environment.baseUrl}/todo-lists/${data.todolistId}/tasks/${data.taskId}`, data.model)
+      .pipe(
+        map(() => {
+          const state = this.tasks$.getValue()
+          state[data.todolistId] = state[data.todolistId].map(el =>
+            el.id === data.taskId ? { ...el, ...data.model } : el
+          )
+          return state
+        })
+      )
+      .subscribe(tasks => this.tasks$.next(tasks))
   }
 }

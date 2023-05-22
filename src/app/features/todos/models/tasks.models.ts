@@ -3,20 +3,23 @@ export interface GetTasksResponse {
   totalCount: number
   error: string
 }
-export interface Task {
+export interface Task extends UpdateTaskModel {
   id: string
-  title: string
-  description: string
   todoListId: string
   order: number
-  status: number
-  priority: number
-  startDate: string
-  deadline: string
   addedDate: string
-  completed: boolean
 }
 
 export interface DomainTasks {
   [key: string]: Task[]
+}
+
+export interface UpdateTaskModel {
+  title: string
+  description: string
+  completed: boolean
+  status: number
+  priority: number
+  startDate: string
+  deadline: string
 }
