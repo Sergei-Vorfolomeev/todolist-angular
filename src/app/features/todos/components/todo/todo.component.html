@@ -10,4 +10,5 @@
     <p (dblclick)="activateEditModeHandler()">{{ todo.title }}</p>
   </ng-template>
   <button (click)="deleteTodoHandler()">Delete</button>
+  <tl-tasks [todolistId]="todo.id"></tl-tasks>
 </div>
