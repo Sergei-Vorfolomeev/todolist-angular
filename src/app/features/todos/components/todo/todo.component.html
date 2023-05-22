@@ -1,14 +1,16 @@
-<div class="box">
-  <input
-    type="text"
-    *ngIf="this.editMode; else content"
-    (blur)="deactivateEditMode()"
-    [(ngModel)]="this.newTitle"
-    autofocus
-  />
-  <ng-template #content>
-    <p (dblclick)="activateEditModeHandler()">{{ todo.title }}</p>
-  </ng-template>
-  <button (click)="deleteTodoHandler()">Delete</button>
+<div class="todo-box">
+  <div class="todo-header">
+    <input
+      type="text"
+      *ngIf="this.editMode; else content"
+      (blur)="deactivateEditMode()"
+      [(ngModel)]="this.newTitle"
+      autofocus
+    />
+    <ng-template #content>
+      <span (dblclick)="activateEditModeHandler()">{{ todo.title }}</span>
+    </ng-template>
+    <button (click)="deleteTodoHandler()">Delete</button>
+  </div>
   <tl-tasks [todolistId]="todo.id"></tl-tasks>
 </div>

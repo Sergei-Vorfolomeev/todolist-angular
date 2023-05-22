@@ -1,10 +1,12 @@
-<div>
+<div class="task-box">
   <input
+    class="checkbox"
     type="checkbox"
     (click)="changeTaskStatusHandler($event)"
     [checked]="task.status === taskStatusesEnum.completed"
   />
   <input
+    class="input"
     *ngIf="editMode; else elseBlock"
     type="text"
     [(ngModel)]="newTitle"
@@ -13,7 +15,12 @@
     autofocus
   />
   <ng-template #elseBlock>
-    <span (dblclick)="activateEditMode()">{{ task.title }}</span>
+    <span
+      class="task-title"
+      [ngClass]="{ completed: task.status === taskStatusesEnum.completed }"
+      (dblclick)="activateEditModeHandler()"
+      >{{ task.title }}</span
+    >
   </ng-template>
-  <button (click)="deleteTaskHandler()">X</button>
+  <button (click)="deleteTaskHandler()">&#215;</button>
 </div>

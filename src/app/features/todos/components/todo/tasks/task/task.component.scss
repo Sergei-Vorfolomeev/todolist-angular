@@ -1,0 +1,43 @@
+.task-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+  font-size: 20px;
+  justify-content: space-between;
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  .task-title {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .completed {
+    opacity: 0.5;
+    text-decoration: line-through;
+  }
+
+  button {
+    content:'\2573';
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: rgba(255,0,0,1);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.22);
+  }
+}
+

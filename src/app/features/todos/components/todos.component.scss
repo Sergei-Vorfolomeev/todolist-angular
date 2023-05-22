@@ -12,9 +12,37 @@
   margin-bottom: 20px;
   gap: 10px;
 
-  & input {
-    width: 300px;
-    border: 2px solid black;
-    padding: 10px;
+  input {
+    width: 60%;
+    height: 40px;
+    border: none;
+    background: rgba(70, 132, 255, 0.14);
+    border-radius: 3px;
+    outline: none;
+    font-size: 20px;
+    padding: 5px;
   }
+
+  button {
+    width: 70px;
+    height: 30px;
+    margin-left: 10px;
+    padding: 5px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: #3264c8;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.22);
+  }
+
+}
+
+.todos-box {
+  display: flex;
+  flex-wrap: wrap;
 }

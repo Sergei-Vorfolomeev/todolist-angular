@@ -35,11 +35,7 @@ export class TasksComponent implements OnInit {
     this.tasksService.deleteTask({ todolistId: this.todolistId, taskId })
   }
 
-  changeTaskStatus(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
-    this.tasksService.changeTaskStatus(data)
-  }
-
-  changeTaskTitle(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
-    this.tasksService.changeTaskTitle(data)
+  changeTask(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
+    this.tasksService.changeTask(data)
   }
 }

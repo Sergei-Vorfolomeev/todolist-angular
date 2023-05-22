@@ -10,12 +10,7 @@ import { TaskStatusesEnum } from 'app/core/enums/taskStatuses.enum'
 export class TaskComponent {
   @Input() task!: Task
   @Output() deleteTaskEvent = new EventEmitter<string>()
-  @Output() changeTaskStatusEvent = new EventEmitter<{
-    todolistId: string
-    taskId: string
-    model: UpdateTaskModel
-  }>()
-  @Output() changeTaskTitleEvent = new EventEmitter<{
+  @Output() changeTaskEvent = new EventEmitter<{
     todolistId: string
     taskId: string
     model: UpdateTaskModel
@@ -37,7 +32,7 @@ export class TaskComponent {
       ...this.task,
       status: newStatus ? this.taskStatusesEnum.completed : this.taskStatusesEnum.active,
     }
-    this.changeTaskStatusEvent.emit({
+    this.changeTaskEvent.emit({
       todolistId: this.task.todoListId,
       taskId: this.task.id,
       model,
@@ -49,16 +44,17 @@ export class TaskComponent {
       ...this.task,
       title: this.newTitle,
     }
-    this.changeTaskTitleEvent.emit({
+    this.changeTaskEvent.emit({
       todolistId: this.task.todoListId,
       taskId: this.task.id,
       model,
     })
     this.editMode = false
+    this.newTitle = ''
   }
 
-  activateEditMode() {
+  activateEditModeHandler() {
     this.newTitle = this.task.title
-    this.editMode = !this.editMode
+    this.editMode = true
   }
 }

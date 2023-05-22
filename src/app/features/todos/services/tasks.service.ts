@@ -61,26 +61,12 @@ export class TasksService {
       )
       .subscribe(state => this.tasks$.next(state))
   }
-  changeTaskStatus(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
+  changeTask(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
     this.http
       .put<CommonResponse<Task>>(
         `${environment.baseUrl}/todo-lists/${data.todolistId}/tasks/${data.taskId}`,
         data.model
       )
-      .pipe(
-        map(() => {
-          const state = this.tasks$.getValue()
-          state[data.todolistId] = state[data.todolistId].map(el =>
-            el.id === data.taskId ? { ...el, ...data.model } : el
-          )
-          return state
-        })
-      )
-      .subscribe(tasks => this.tasks$.next(tasks))
-  }
-  changeTaskTitle(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
-    this.http
-      .put(`${environment.baseUrl}/todo-lists/${data.todolistId}/tasks/${data.taskId}`, data.model)
       .pipe(
         map(() => {
           const state = this.tasks$.getValue()
