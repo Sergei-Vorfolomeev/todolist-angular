@@ -1,1 +1,6 @@
+<div>
+  <input type="text" placeholder="Add new task" [(ngModel)]="taskTitle" />
+  <button (click)="addTaskHandler()">+</button>
+</div>
+
 <tl-task *ngFor="let task of tasks$ | async" [task]="task"></tl-task>
