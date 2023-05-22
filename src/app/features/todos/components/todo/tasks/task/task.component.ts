@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { Task } from 'app/features/todos/models/tasks.models'
 
 @Component({
@@ -8,4 +8,9 @@ import { Task } from 'app/features/todos/models/tasks.models'
 })
 export class TaskComponent {
   @Input() task!: Task
+  @Output() deleteTaskEvent = new EventEmitter<string>()
+
+  deleteTaskHandler() {
+    this.deleteTaskEvent.emit(this.task.id)
+  }
 }

@@ -3,4 +3,8 @@
   <button (click)="addTaskHandler()">+</button>
 </div>
 
-<tl-task *ngFor="let task of tasks$ | async" [task]="task"></tl-task>
+<tl-task
+  *ngFor="let task of tasks$ | async"
+  [task]="task"
+  (deleteTaskEvent)="deleteTask($event)"
+></tl-task>
