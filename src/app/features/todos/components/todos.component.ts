@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { TodosService } from 'app/features/todos/services/todos.service'
 import { Observable } from 'rxjs'
-import { Todo } from 'app/features/todos/models/todos.models'
+import { DomainTodo } from 'app/features/todos/models/todos.models'
 
 @Component({
   selector: 'tl-todos',
@@ -11,7 +11,7 @@ import { Todo } from 'app/features/todos/models/todos.models'
 export class TodosComponent implements OnInit {
   constructor(private todosService: TodosService) {}
 
-  todos$ = new Observable<Todo[]>()
+  todos$ = new Observable<DomainTodo[]>()
   newTitle = ''
 
   ngOnInit(): void {

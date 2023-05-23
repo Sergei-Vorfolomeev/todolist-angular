@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from 'environments/environment'
-import { Todo } from 'app/features/todos/models/todos.models'
+import { DomainTodo, FilterType, Todo } from 'app/features/todos/models/todos.models'
 import { BehaviorSubject, map } from 'rxjs'
 import { CommonResponse } from 'app/core/models/core.models'
 
@@ -11,12 +11,20 @@ import { CommonResponse } from 'app/core/models/core.models'
 export class TodosService {
   constructor(private http: HttpClient) {}
 
-  todos$ = new BehaviorSubject<Todo[]>([])
+  todos$ = new BehaviorSubject<DomainTodo[]>([])
 
   getTodos() {
-    this.http.get<Todo[]>(`${environment.baseUrl}/todo-lists`).subscribe(res => {
-      this.todos$.next(res)
-    })
+    this.http
+      .get<Todo[]>(`${environment.baseUrl}/todo-lists`)
+      .pipe(
+        map(res => {
+          const newTodos: DomainTodo[] = res.map(el => ({ ...el, filter: 'all' }))
+          return newTodos
+        })
+      )
+      .subscribe(res => {
+        this.todos$.next(res)
+      })
   }
 
   createTodo(title: string) {
@@ -25,7 +33,7 @@ export class TodosService {
       .pipe(
         map(res => {
           const stateTodos = this.todos$.getValue()
-          const newTodo = res.data.item
+          const newTodo: DomainTodo = { ...res.data.item, filter: 'all' }
           return [newTodo, ...stateTodos]
         })
       )
@@ -59,5 +67,13 @@ export class TodosService {
         })
       )
       .subscribe(res => this.todos$.next(res))
+  }
+
+  changeFilter(data: { todolistId: string; filter: FilterType }) {
+    const state = this.todos$.getValue()
+    const newTodos = state.map(el =>
+      el.id === data.todolistId ? { ...el, filter: data.filter } : el
+    )
+    this.todos$.next(newTodos)
   }
 }

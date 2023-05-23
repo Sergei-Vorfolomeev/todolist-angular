@@ -13,6 +13,6 @@
     <button (click)="deleteTodoHandler()">Delete</button>
   </div>
   <tl-tasks [todolistId]="todo.id"></tl-tasks>
-  <tl-filter></tl-filter>
+  <tl-filter (changeFilterEvent)="changeFilter($event)" [filter]="todo.filter"></tl-filter>
   <tl-footer [addedDate]="todo.addedDate"></tl-footer>
 </div>

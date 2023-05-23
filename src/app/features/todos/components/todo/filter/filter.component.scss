@@ -22,12 +22,20 @@
   }
 
   .filter-all {
-    background: rgb(0, 173, 0);
+    background: rgb(255, 255, 255);
+    color: black;
   }
   .filter-active {
-    background: rgba(255,165,0,1);
+    background: rgb(255, 255, 255);
+    color: black;
   }
   .filter-completed {
-    background:rgba(255,0,0,1);
+    background: rgb(255, 255, 255);
+    color: black;
+  }
+
+  .active {
+    background: rgb(0, 173, 0);
+    color: white;
   }
 }
