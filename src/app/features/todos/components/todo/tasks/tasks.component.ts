@@ -21,11 +21,6 @@ export class TasksComponent implements OnInit {
   ngOnInit(): void {
     this.tasksService.getTasks(this.todolistId)
 
-    // this.tasks$ = this.tasksService.tasks$.pipe(
-    //   map(tasks => {
-    //     return tasks[this.todolistId]
-    //   })
-    // )
     this.tasks$ = combineLatest([this.tasksService.tasks$, this.todosService.todos$]).pipe(
       map(res => {
         const tasks = res[0]

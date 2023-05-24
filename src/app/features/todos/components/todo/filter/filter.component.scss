@@ -34,8 +34,16 @@
     color: black;
   }
 
-  .active {
+  .active-all {
     background: rgb(0, 173, 0);
+    color: white;
+  }
+  .active-active {
+    background: rgba(255,165,0,1);
+    color: white;
+  }
+  .active-completed {
+    background: rgba(255,0,0,1);
     color: white;
   }
 }

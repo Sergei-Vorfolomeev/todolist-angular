@@ -1,1 +1,50 @@
-<p>auth works!</p>
+<div class="box">
+  <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" class="form">
+    <!--  Email-->
+    <label for="email" class="label">Email: </label>
+    <input
+      id="email"
+      type="text"
+      formControlName="email"
+      required
+      class="input"
+      [ngClass]="{
+        'input-success': email!.valid,
+        'input-error': email!.invalid && (email!.dirty || email!.touched),
+      }"
+    />
+
+    <div *ngIf="email!.invalid && (email!.dirty || email!.touched)" class="error">
+      <div *ngIf="email!.errors?.['required']">Email is required.</div>
+      <div *ngIf="email!.errors?.['pattern']">Email is not correct.</div>
+    </div>
+
+    <!--  Password-->
+    <label for="password" class="label">Password: </label>
+    <input
+      id="password"
+      type="password"
+      formControlName="password"
+      required
+      class="input"
+      [ngClass]="{
+        'input-success': password!.valid,
+        'input-error': password!.invalid && (password!.dirty || password!.touched),
+      }"
+    />
+
+    <div *ngIf="password!.invalid && (password!.dirty || password!.touched)" class="error">
+      <div *ngIf="password!.errors?.['required']">Password is required.</div>
+      <div *ngIf="password!.errors?.['minlength']">Password must be more than 3 symbols.</div>
+    </div>
+
+    <!--  RememberMe-->
+
+    <label for="rememberMe"
+      ><input id="rememberMe" type="checkbox" formControlName="rememberMe" />Remember me
+    </label>
+
+    <p>Complete the form to enable button.</p>
+    <button type="submit" [disabled]="loginForm.invalid">Submit</button>
+  </form>
+</div>

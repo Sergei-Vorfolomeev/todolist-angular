@@ -12,7 +12,7 @@
     [(ngModel)]="newTitle"
     (blur)="changeTaskTitleHandler()"
     (keyup.enter)="changeTaskTitleHandler()"
-    autofocus
+    autofocus="autofocus"
   />
   <ng-template #elseBlock>
     <span
