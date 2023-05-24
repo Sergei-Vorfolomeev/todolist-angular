@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from 'environments/environment'
 import { CommonResponse } from 'app/core/models/core.models'
-import { AuthRequest, AuthResponse } from 'app/features/auth/auth.models'
+import { LoginRequest, MeResponse } from 'app/features/auth/auth.models'
 import { Router } from '@angular/router'
 import { ResultCodeEnum } from 'app/core/enums/resultCode.enum'
 
@@ -10,7 +10,9 @@ import { ResultCodeEnum } from 'app/core/enums/resultCode.enum'
 export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(data: Partial<AuthRequest>) {
+  isAuth = false
+
+  login(data: Partial<LoginRequest>) {
     this.http
       .post<CommonResponse<{ userId: number }>>(`${environment.baseUrl}/auth/login`, data)
       .subscribe(res => {
@@ -29,8 +31,10 @@ export class AuthService {
   }
 
   me() {
-    this.http
-      .get<CommonResponse<AuthResponse>>(`${environment.baseUrl}/auth/me`)
-      .subscribe(() => {})
+    this.http.get<CommonResponse<MeResponse>>(`${environment.baseUrl}/auth/me`).subscribe(res => {
+      if (res.resultCode === ResultCodeEnum.success) {
+        this.isAuth = true
+      }
+    })
   }
 }

@@ -1,9 +1,9 @@
-export interface AuthResponse {
+export interface MeResponse {
   id: number
   email: string
   login: string
 }
-export interface AuthRequest {
+export interface LoginRequest {
   email: string | null | undefined
   password: string | null | undefined
   rememberMe: boolean | null | undefined

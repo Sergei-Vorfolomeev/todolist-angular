@@ -19,5 +19,6 @@ import { FooterComponent } from './components/todo/footer/footer.component'
     FooterComponent,
   ],
   imports: [CommonModule, TodosRoutingModule, FormsModule],
+  exports: [TodosComponent],
 })
 export class TodosModule {}

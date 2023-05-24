@@ -4,6 +4,7 @@ import { environment } from 'environments/environment'
 import { DomainTodo, FilterType, Todo } from 'app/features/todos/models/todos.models'
 import { BehaviorSubject, map } from 'rxjs'
 import { CommonResponse } from 'app/core/models/core.models'
+import { ResultCodeEnum } from 'app/core/enums/resultCode.enum'
 
 @Injectable({
   providedIn: 'root',
@@ -32,9 +33,11 @@ export class TodosService {
       .post<CommonResponse<{ item: Todo }>>(`${environment.baseUrl}/todo-lists`, { title })
       .pipe(
         map(res => {
-          const stateTodos = this.todos$.getValue()
-          const newTodo: DomainTodo = { ...res.data.item, filter: 'all' }
-          return [newTodo, ...stateTodos]
+          if (res.resultCode === ResultCodeEnum.success) {
+            const stateTodos = this.todos$.getValue()
+            const newTodo: DomainTodo = { ...res.data.item, filter: 'all' }
+            return [newTodo, ...stateTodos]
+          } else throw new Error()
         })
       )
       .subscribe(todos => this.todos$.next(todos))
@@ -45,7 +48,8 @@ export class TodosService {
       .delete<CommonResponse>(`${environment.baseUrl}/todo-lists/${todolistId}`)
       .pipe(
         map(res => {
-          if (res.resultCode === 0) return this.todos$.getValue().filter(el => el.id !== todolistId)
+          if (res.resultCode === ResultCodeEnum.success)
+            return this.todos$.getValue().filter(el => el.id !== todolistId)
           else throw new Error()
         })
       )
@@ -59,7 +63,7 @@ export class TodosService {
       })
       .pipe(
         map(res => {
-          if (res.resultCode === 0) {
+          if (res.resultCode === ResultCodeEnum.success) {
             return this.todos$
               .getValue()
               .map(el => (el.id === data.todolistId ? { ...el, title: data.newTitle } : el))
