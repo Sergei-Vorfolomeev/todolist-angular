@@ -1,6 +1,7 @@
 import { Component } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Validators } from '@angular/forms'
+import { AuthService } from 'app/core/services/auth.service'
 
 @Component({
   selector: 'tl-auth',
@@ -8,6 +9,8 @@ import { Validators } from '@angular/forms'
   styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent {
+  constructor(private authService: AuthService) {}
+
   loginForm = new FormGroup({
     email: new FormControl('', [
       Validators.required,
@@ -27,6 +30,7 @@ export class AuthComponent {
   }
 
   onLoginSubmit() {
-    console.log(this.email!.valid)
+    const value = this.loginForm.value
+    this.authService.login(value)
   }
 }
