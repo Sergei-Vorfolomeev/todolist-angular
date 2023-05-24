@@ -10,7 +10,7 @@ import { ResultCodeEnum } from 'app/core/enums/resultCode.enum'
 export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(data: AuthRequest) {
+  login(data: Partial<AuthRequest>) {
     this.http
       .post<CommonResponse<{ userId: number }>>(`${environment.baseUrl}/auth/login`, data)
       .subscribe(res => {

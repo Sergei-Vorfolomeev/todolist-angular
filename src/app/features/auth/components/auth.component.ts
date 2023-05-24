@@ -12,14 +12,20 @@ export class AuthComponent {
   constructor(private authService: AuthService) {}
 
   loginForm = new FormGroup({
-    email: new FormControl('', [
-      Validators.required,
-      Validators.pattern(
-        '^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$'
-      ),
-    ]),
-    password: new FormControl('', [Validators.required, Validators.minLength(4)]),
-    rememberMe: new FormControl(false),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern(
+          '^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$'
+        ),
+      ],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(4)],
+    }),
+    rememberMe: new FormControl(false, { nonNullable: true }),
   })
 
   get email() {
