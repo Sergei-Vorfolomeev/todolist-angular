@@ -1,0 +1,14 @@
+<div *ngIf="notification$ | async; let notification">
+  <div class="notifyBox">
+    <div
+      class="notification_item"
+      [ngClass]="{
+        notification_item_success: notification.severity === 'success',
+        notification_item_error: notification.severity === 'error'
+      }"
+    >
+      {{ notification.message }}
+      <button (click)="closeNotification()">X</button>
+    </div>
+  </div>
+</div>

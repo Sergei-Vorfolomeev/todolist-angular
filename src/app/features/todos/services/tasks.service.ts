@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { environment } from 'environments/environment'
-import { BehaviorSubject, map } from 'rxjs'
+import { BehaviorSubject, catchError, EMPTY, map } from 'rxjs'
 import {
   DomainTasks,
   GetTasksResponse,
@@ -9,19 +9,24 @@ import {
   UpdateTaskModel,
 } from 'app/features/todos/models/tasks.models'
 import { CommonResponse } from 'app/core/models/core.models'
+import { NotificationService } from 'app/core/services/notification.service'
+import { ResultCodeEnum } from 'app/core/enums/resultCode.enum'
 
 @Injectable({
   providedIn: 'root',
 })
 export class TasksService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationService: NotificationService) {}
 
   tasks$ = new BehaviorSubject<DomainTasks>({})
 
   getTasks(todolistId: string) {
     this.http
       .get<GetTasksResponse>(`${environment.baseUrl}/todo-lists/${todolistId}/tasks`)
-      .pipe(map(el => el.items))
+      .pipe(
+        map(el => el.items),
+        catchError(this.handleError.bind(this))
+      )
       .subscribe(tasks => {
         const state = this.tasks$.getValue()
         state[todolistId] = tasks
@@ -38,14 +43,20 @@ export class TasksService {
         }
       )
       .pipe(
-        map(tasks => {
-          const state = this.tasks$.getValue()
-          const newTask = tasks.data.item
-          state[data.todolistId] = [newTask, ...state[data.todolistId]]
-          return state
-        })
+        map(res => {
+          if (res.resultCode === ResultCodeEnum.success) {
+            const state = this.tasks$.getValue()
+            const newTask = res.data.item
+            state[data.todolistId] = [newTask, ...state[data.todolistId]]
+            return state
+          } else {
+            this.notificationService.handleError(res.messages[0])
+            return EMPTY
+          }
+        }),
+        catchError(this.handleError.bind(this))
       )
-      .subscribe(state => this.tasks$.next(state))
+      .subscribe(state => this.tasks$.next(<DomainTasks>state))
   }
   deleteTask(data: { todolistId: string; taskId: string }) {
     this.http
@@ -53,13 +64,18 @@ export class TasksService {
         `${environment.baseUrl}/todo-lists/${data.todolistId}/tasks/${data.taskId}`
       )
       .pipe(
-        map(() => {
-          const state = this.tasks$.getValue()
-          state[data.todolistId] = state[data.todolistId].filter(el => el.id !== data.taskId)
-          return state
+        map(res => {
+          if (res.resultCode === ResultCodeEnum.success) {
+            const state = this.tasks$.getValue()
+            state[data.todolistId] = state[data.todolistId].filter(el => el.id !== data.taskId)
+            return state
+          } else {
+            this.notificationService.handleError(res.messages[0])
+            return EMPTY
+          }
         })
       )
-      .subscribe(state => this.tasks$.next(state))
+      .subscribe(state => this.tasks$.next(<DomainTasks>state))
   }
   changeTask(data: { todolistId: string; taskId: string; model: UpdateTaskModel }) {
     this.http
@@ -77,5 +93,9 @@ export class TasksService {
         })
       )
       .subscribe(tasks => this.tasks$.next(tasks))
+  }
+  handleError(err: HttpErrorResponse) {
+    this.notificationService.handleError(err.message)
+    return EMPTY
   }
 }

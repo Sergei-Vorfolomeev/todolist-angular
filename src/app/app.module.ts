@@ -7,10 +7,19 @@ import { AuthModule } from 'app/features/auth/auth.module'
 import { TodosModule } from 'app/features/todos/todos.module'
 import { CoreModule } from 'app/core/core.module'
 import { HttpClientModule } from '@angular/common/http'
+import { SharedModule } from 'app/shared/shared.module'
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, CoreModule, AuthModule, TodosModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    CoreModule,
+    AuthModule,
+    TodosModule,
+    HttpClientModule,
+    SharedModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
