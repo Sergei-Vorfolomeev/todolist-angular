@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { environment } from 'environments/environment'
 import { DomainTodo, FilterType, Todo } from 'app/features/todos/models/todos.models'
-import { BehaviorSubject, map } from 'rxjs'
+import { BehaviorSubject, catchError, EMPTY, map } from 'rxjs'
 import { CommonResponse } from 'app/core/models/core.models'
 import { ResultCodeEnum } from 'app/core/enums/resultCode.enum'
+import { NotificationService } from 'app/core/services/notification.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodosService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationService: NotificationService) {}
 
   todos$ = new BehaviorSubject<DomainTodo[]>([])
 
@@ -37,8 +38,12 @@ export class TodosService {
             const stateTodos = this.todos$.getValue()
             const newTodo: DomainTodo = { ...res.data.item, filter: 'all' }
             return [newTodo, ...stateTodos]
-          } else throw new Error()
-        })
+          } else {
+            this.notificationService.handleError(res.messages[0])
+            return this.todos$.getValue()
+          }
+        }),
+        catchError(this.handleError.bind(this))
       )
       .subscribe(todos => this.todos$.next(todos))
   }
@@ -50,8 +55,12 @@ export class TodosService {
         map(res => {
           if (res.resultCode === ResultCodeEnum.success)
             return this.todos$.getValue().filter(el => el.id !== todolistId)
-          else throw new Error()
-        })
+          else {
+            this.notificationService.handleError(res.messages[0])
+            return this.todos$.getValue()
+          }
+        }),
+        catchError(this.handleError.bind(this))
       )
       .subscribe(res => this.todos$.next(res))
   }
@@ -67,8 +76,12 @@ export class TodosService {
             return this.todos$
               .getValue()
               .map(el => (el.id === data.todolistId ? { ...el, title: data.newTitle } : el))
-          } else throw new Error()
-        })
+          } else {
+            this.notificationService.handleError(res.messages[0])
+            return this.todos$.getValue()
+          }
+        }),
+        catchError(this.handleError.bind(this))
       )
       .subscribe(res => this.todos$.next(res))
   }
@@ -79,5 +92,10 @@ export class TodosService {
       el.id === data.todolistId ? { ...el, filter: data.filter } : el
     )
     this.todos$.next(newTodos)
+  }
+
+  handleError(err: HttpErrorResponse) {
+    this.notificationService.handleError(err.message)
+    return EMPTY
   }
 }

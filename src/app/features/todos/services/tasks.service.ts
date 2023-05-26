@@ -51,12 +51,12 @@ export class TasksService {
             return state
           } else {
             this.notificationService.handleError(res.messages[0])
-            return EMPTY
+            return this.tasks$.getValue()
           }
         }),
         catchError(this.handleError.bind(this))
       )
-      .subscribe(state => this.tasks$.next(<DomainTasks>state))
+      .subscribe(state => this.tasks$.next(state))
   }
   deleteTask(data: { todolistId: string; taskId: string }) {
     this.http
@@ -71,9 +71,10 @@ export class TasksService {
             return state
           } else {
             this.notificationService.handleError(res.messages[0])
-            return EMPTY
+            return this.tasks$.getValue()
           }
-        })
+        }),
+        catchError(this.handleError.bind(this))
       )
       .subscribe(state => this.tasks$.next(<DomainTasks>state))
   }
@@ -84,15 +85,21 @@ export class TasksService {
         data.model
       )
       .pipe(
-        map(() => {
-          const state = this.tasks$.getValue()
-          state[data.todolistId] = state[data.todolistId].map(el =>
-            el.id === data.taskId ? { ...el, ...data.model } : el
-          )
-          return state
-        })
+        map(res => {
+          if (res.resultCode === ResultCodeEnum.success) {
+            const state = this.tasks$.getValue()
+            state[data.todolistId] = state[data.todolistId].map(el =>
+              el.id === data.taskId ? { ...el, ...data.model } : el
+            )
+            return state
+          } else {
+            this.notificationService.handleError(res.messages[0])
+            return this.tasks$.getValue()
+          }
+        }),
+        catchError(this.handleError.bind(this))
       )
-      .subscribe(tasks => this.tasks$.next(tasks))
+      .subscribe(tasks => this.tasks$.next(<DomainTasks>tasks))
   }
   handleError(err: HttpErrorResponse) {
     this.notificationService.handleError(err.message)
